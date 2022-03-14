@@ -84,9 +84,6 @@ namespace Jobsity.CodeChallenge.Chat.UI
                 endpoints.MapRazorPages();
                 endpoints.MapHub<ChatHub>("/chatHub"); // Add the ChatHub to the configuration.
             });
-
-            // Run 'RegisterSignalRWithRabbitMQ' when the application has started.
-            //lifetime.ApplicationStarted.Register(() => RegisterSignalRWithRabbitMQ(app.ApplicationServices));
         }
 
         private static void ConfigureMQServices(IServiceCollection services)
@@ -101,13 +98,5 @@ namespace Jobsity.CodeChallenge.Chat.UI
             services.Configure<MqErrorSettingsProvider>(x => x.GetSettingsProvider(Configuration, "RabbitServiceQueues"));
             services.Configure<MqChatClientSettingsProvider>(x => x.GetSettingsProvider(Configuration, "RabbitServiceQueues"));
         }
-
-        //public void RegisterSignalRWithRabbitMQ(IServiceProvider serviceProvider)
-        //{
-        //    // Connect to RabbitMQ
-        //    serviceProvider.
-        //        GetRequiredService<IRabbitMqService>()
-        //        .Connect();
-        //}
     }
 }
