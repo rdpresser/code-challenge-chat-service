@@ -1,18 +1,17 @@
+using Jobsity.CodeChallenge.Chat.UI.Configurations.Extensions;
 using Jobsity.CodeChallenge.Chat.UI.Data;
-using Jobsity.CodeChallenge.Chat.UI.Hubs;
+using Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.Hubs;
+using Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.MessageBroker.MqClientConfig;
+using Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.MessageBroker.Providers.MbHostConfig;
+using Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.MessageBroker.Providers.MqClientConfig;
+using Jobsity.CodeChallenge.Chat.UI.Infra.IoC;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Jobsity.CodeChallenge.Chat.UI
 {
@@ -29,9 +28,14 @@ namespace Jobsity.CodeChallenge.Chat.UI
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            //services.AddDbContext<ApplicationDbContext>(options =>
+            //    options.UseSqlServer(
+            //        Configuration.GetConnectionString("DefaultConnection")));
+
+            ConfigureAppProviders(services);
+
             services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(
-                    Configuration.GetConnectionString("DefaultConnection")));
+                options.UseInMemoryDatabase("TestDbChat"));
 
             services.AddDatabaseDeveloperPageExceptionFilter();
 
@@ -46,11 +50,14 @@ namespace Jobsity.CodeChallenge.Chat.UI
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
+
+            services.RegisterServices();
+            ConfigureMQServices(services);
             services.AddSignalR();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env, IHostApplicationLifetime lifetime)
         {
             if (env.IsDevelopment())
             {
@@ -75,8 +82,32 @@ namespace Jobsity.CodeChallenge.Chat.UI
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapRazorPages();
-                endpoints.MapHub<ChatHub>("/chatHub");
+                endpoints.MapHub<ChatHub>("/chatHub"); // Add the ChatHub to the configuration.
             });
+
+            // Run 'RegisterSignalRWithRabbitMQ' when the application has started.
+            //lifetime.ApplicationStarted.Register(() => RegisterSignalRWithRabbitMQ(app.ApplicationServices));
         }
+
+        private static void ConfigureMQServices(IServiceCollection services)
+        {
+            services.AddHostedService<RabbitMqEventConsumer<MqErrorSettingsProvider>>();
+            services.AddHostedService<RabbitMqEventConsumer<MqChatClientSettingsProvider>>();
+        }
+
+        private void ConfigureAppProviders(IServiceCollection services)
+        {
+            services.Configure<MbHostSettingsProvider>(Configuration.GetSection("RabbitSettings"));
+            services.Configure<MqErrorSettingsProvider>(x => x.GetSettingsProvider(Configuration, "RabbitServiceQueues"));
+            services.Configure<MqChatClientSettingsProvider>(x => x.GetSettingsProvider(Configuration, "RabbitServiceQueues"));
+        }
+
+        //public void RegisterSignalRWithRabbitMQ(IServiceProvider serviceProvider)
+        //{
+        //    // Connect to RabbitMQ
+        //    serviceProvider.
+        //        GetRequiredService<IRabbitMqService>()
+        //        .Connect();
+        //}
     }
 }
