@@ -15,7 +15,36 @@
 * Handle messages that are not understood or any exceptions raised within the bot. => Done!
 * Build an installer. => Done!
 
-=> Libraries used on this project
+=> Libraries and main Tools used on this project
 * RabbitMQ.Client = To handle decoupled processing using Message Broker pattern.
 * StooqApi = To deal with Stooq api and responses
 * SignalR = To create the chat solution and handle communication between users and different chat groups for conversation
+* Docker and Docker-Compose = To test locally using a RabbitMq server without the need of install all prerequisits
+
+=> Steps to start the application
+* Make sure the be at the UI project
+	* src\client\Jobsity.CodeChallenge.Chat.UI
+	* run the following command: "dotnet build", if everything is OK, go to next step
+	* return back in the root folder, where the .solution file is placed
+	* run the following command: "docker-compose up --build"
+	* in other terminal run the following command to identify the port for the web application
+		* docker ps -a
+		* in my case, 51977, so open the following url: http://localhost:51977/
+	
+	* Create your Identity user in the first time
+		* Click on Register
+		* Fulfill the form with required fiels (email and user with 6 characters lenght)
+		* After click on register button, click on the confirmation for the email like this: " Click here to confirm your account"
+		* In the right upper corner, click on login using the same credential just created in the previous step and perform the login
+			* Reproduce the same steps for a second or N users you would like to test the application
+	
+	* Using the application
+		* After the login you are redirected to the index page, if not, click on the Home uppper menu
+		* Type in the chatroom name a chat room to start talking with others and press the Join ChatRoom button
+		* To retrieve stock information, just put in the Message box the following: "/stock=<stock_code>"
+			* Use this value as an example: /stock=aapl.us
+		* To talk with other person in the same room, just open other browser tabs on in private (anonnymous tabs) mode.
+		* With a second user created in the previus steps, perform the login and join in the same chat room to start talking
+
+	* Have Fun!
+
