@@ -51,8 +51,15 @@ namespace Jobsity.CodeChallenge.Chat.UI
                 .AddEntityFrameworkStores<ApplicationDbContext>();
             services.AddRazorPages();
 
+            // ASP.NET HttpContext dependency
+            services.AddHttpContextAccessor();
+            // NET core http client factory
+            services.AddHttpClient();
+
             services.RegisterServices();
+
             ConfigureMQServices(services);
+
             services.AddSignalR();
         }
 

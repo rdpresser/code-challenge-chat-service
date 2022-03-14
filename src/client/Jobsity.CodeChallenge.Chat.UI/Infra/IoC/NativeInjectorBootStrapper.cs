@@ -15,11 +15,12 @@ namespace Jobsity.CodeChallenge.Chat.UI.Infra.IoC
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
-            //services.AddSingleton<IRabbitMqService, RabbitMqService>();
+            //Singleton IoC configuration for RabbitMq HostedServices
             services.AddSingleton(typeof(IRabbitMqMessageProducer<>), typeof(RabbitMqMessageProducer<>));
             services.AddSingleton<IMbHostConfigProducer, MbHostConfigProducer>();
             services.AddSingleton<IMbHostConfigConsumer, MbHostConfigConsumer>();
 
+            //Common IoC setup for Infra and RMQ Consumers
             //services.AddScoped<IRabbitMqClientConsumer<MqErrorSettingsProvider>, ApiErrorLogMQConsumerAppService>();
             services.AddScoped<IRabbitMqClientConsumer<MqChatClientSettingsProvider>, ChatMqConsumerAppService>();
 
