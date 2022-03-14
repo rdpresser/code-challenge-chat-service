@@ -13,7 +13,7 @@
 * Have more than one chatroom. => Done!
 * Use .NET identity for users authentication => Done!
 * Handle messages that are not understood or any exceptions raised within the bot. => Done!
-* Build an installer. => Done!
+* Build an installer. => Done! (used docker compose)
 
 => Libraries and main Tools used on this project
 * RabbitMQ.Client = To handle decoupled processing using Message Broker pattern.
