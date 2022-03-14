@@ -21,14 +21,17 @@ namespace Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.Hubs
             _logger = logger;
         }
 
-        public string GetConnectionId()
+        public string GetConnectionId
         {
-            return Context.ConnectionId;
+            get
+            {
+                return Context.ConnectionId;
+            }
         }
 
         public async Task SendMessage(ChatMessageDto chatMessage)
         {
-            chatMessage.ConnectionId = GetConnectionId();
+            chatMessage.ConnectionId = GetConnectionId;
             var message = chatMessage.ToJson();
 
             _logger.LogInformation(message);
@@ -38,6 +41,18 @@ namespace Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.Hubs
 
             //--------------------------------------------------
             //await Clients.All.SendAsync("ReceiveMessage", user, message);
+        }
+
+        public async Task LeaveGroup(ChatMessageDto chatMessage)
+        {
+            await Groups.RemoveFromGroupAsync(GetConnectionId, chatMessage.ChatRoom);
+            await Clients.Groups(chatMessage.ChatRoom).SendAsync("ReceiveUserLeaveMessage", chatMessage.User, chatMessage.ChatRoom);
+        }
+
+        public async Task JoinGroup(ChatMessageDto chatMessage)
+        {
+            await Clients.Groups(chatMessage.ChatRoom).SendAsync("ReceiveUserJoinMessage", chatMessage.User, chatMessage.ChatRoom);
+            await Groups.AddToGroupAsync(GetConnectionId, chatMessage.ChatRoom);
         }
     }
 }

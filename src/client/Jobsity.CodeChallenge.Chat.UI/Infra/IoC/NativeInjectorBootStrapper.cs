@@ -4,8 +4,6 @@ using Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.MessageBroker.Interfaces.
 using Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.MessageBroker.MbHostConfig;
 using Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.MessageBroker.MqClientConfig;
 using Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.MessageBroker.Providers.MqClientConfig;
-using Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.RabbitMq.Interfaces;
-using Jobsity.CodeChallenge.Chat.UI.Infra.CrossCutting.RabbitMq.Services;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 
@@ -17,7 +15,7 @@ namespace Jobsity.CodeChallenge.Chat.UI.Infra.IoC
         {
             if (services == null) throw new ArgumentNullException(nameof(services));
 
-            services.AddSingleton<IRabbitMqService, RabbitMqService>();
+            //services.AddSingleton<IRabbitMqService, RabbitMqService>();
             services.AddSingleton(typeof(IRabbitMqMessageProducer<>), typeof(RabbitMqMessageProducer<>));
             services.AddSingleton<IMbHostConfigProducer, MbHostConfigProducer>();
             services.AddSingleton<IMbHostConfigConsumer, MbHostConfigConsumer>();
