@@ -1,0 +1,23 @@
+version: '3.4'
+
+services:
+  jobsity.codechallenge.chat.ui:
+    image: ${DOCKER_REGISTRY-}jobsitycodechallengechatui
+    build:
+      context: .
+      dockerfile: src/client/Jobsity.CodeChallenge.Chat.UI/Dockerfile
+    restart: always
+
+  rabbitmq: # login guest:guest
+    image: rabbitmq:3.8-management
+    hostname: "rabbitmq"
+    labels:
+      NAME: "rabbitmq"
+    ports:
+    - "4369:4369"
+    - "5671:5671"
+    - "5672:5672"
+    - "25672:25672"
+    - "15671:15671"
+    - "15672:15672"
+    restart: always
