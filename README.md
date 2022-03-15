@@ -21,6 +21,14 @@
 * **SignalR** = To create the chat solution and handle communication between users and different chat groups for conversation
 * **Docker** and **Docker-Compose** = To test locally using a RabbitMq server without the need of install all prerequisits
 
+=> **Project Stucture**
+* This project was well organized using DDD approach of folders
+	* Application Folder - with Dto's and App Services RabbitMq Consumers
+	* Infra folder - with Commons (Project Extensions), CrossCutting (RabbitMq Client and SignalR) and IoC (for DI project setup)
+	* MVC Pattern with AspNet Core Razor Pages
+	* AspNet Core Identity
+	* Database InMemory to support Identity Users
+
 => **Steps to start the application**
 * Make sure to be at the UI project folder, like the below:
 	* src\client\Jobsity.CodeChallenge.Chat.UI
